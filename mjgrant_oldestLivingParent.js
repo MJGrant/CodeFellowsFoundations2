@@ -58,11 +58,11 @@ var people = [
 
 
 function oldestLivingParent(people) {
-  var livingParents = [];
+  var livingParents = {};
   var oldestLivingParentObj = {};
 
   //Step 1: Iterate through the people list, identifying parents and saving them to a new array if they also have an age
-  for (var i = 0; i < people.length; i ++) {
+/*  for (var i = 0; i < people.length; i ++) {
     if (people[i].parent) {
       var parentName = people[i].parent;
       //check parentName against every name already in the people array until that parent person is found
@@ -75,14 +75,36 @@ function oldestLivingParent(people) {
         }
       }
     }
-  }
+  } */
 
-  //Step 2: Iterate through the livingParents array, comparing age and saving
+  //Step 1: for each person in people, if that person's parent isn't already in livingParents object 
+  //then add that person's parent as the key and that person's parent's age as the value
+  people.forEach(function(person) {
+    if (person.parent) { //if the person has a parent
+      for (i = 0; i < people.length; i ++) { //find that parent in the people array
+        if (person.parent == people[i].name && people[i].age) { //if the parent exists and has an age
+          if (!livingParents[person.parent]) { //and doesn't already exist in livingParents object
+            //add the parent to the livingParents set if not already there, with age as the value
+            livingParents[people[i].name] = people[i].age;
+            //console.log(Object.keys(livingParents)); //debug: display all the keys in the object
+          }
+        }
+      }
+    }
+  });
+
+  //Step 2: Turn livingParents into array
+  var livingParentsArray = [];
+  for (var person in livingParents) {
+      livingParentsArray.push(person);
+    }
+    
+  //Step 3: Iterate through it comparing age and saving
   //the person object with the highest age as it is found.
-  oldestLivingParentObj = livingParents[0];
-  for (var m = 0; m < livingParents.length; m++) {
-      if (livingParents[m].age > oldestLivingParentObj.age) {
-        oldestLivingParentObj = livingParents[m]; //if a livingParent is found to be older than the saved parent, save that one in its place
+  oldestLivingParentObj = livingParentsArray[0];
+  for (var j = 0; j < livingParentsArray.length; j++) {
+      if (livingParentsArray[j].age > oldestLivingParentObj.age) {
+        oldestLivingParentObj = livingParentsArray[j]; //if a livingParent is found to be older than the saved parent, save that one in its place
       }
   }
   console.log("Oldest living parent: ", oldestLivingParentObj.name);
